@@ -1,0 +1,49 @@
+﻿using _8Puzzle.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace _8Puzzle.classes
+{
+    class Logs
+    {
+        public int[] InitState { get; set; }
+        public int VisitedStates { get; set; }
+        public int SolutionDepth { get; set; }
+        public TimeSpan TimeElapsed { get; set; }
+        public string Alghorithm { get; set; }
+
+
+
+        public static void LogSolution(Logs log, string filePath)
+        {
+            List<Logs> logs = new List<Logs>();
+            if (File.Exists(filePath))
+            {
+                string existingJson = File.ReadAllText(filePath);
+                if (!string.IsNullOrEmpty(existingJson))
+                {
+                    logs = JsonSerializer.Deserialize<List<Logs>>(existingJson);
+                }
+            }
+
+            logs.Add(log);
+
+            var options = new JsonSerializerOptions { WriteIndented = false };
+            string json = JsonSerializer.Serialize(logs, options);
+            File.WriteAllText(filePath, json);
+
+            if(logs == null)
+            {
+                Console.WriteLine("No log was written.");
+            }
+
+        }
+
+    }
+}
