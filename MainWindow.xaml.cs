@@ -84,20 +84,16 @@ namespace _8Puzzle
             int emptyRow = -1, emptyCol = -1;
             for (int r = 0; r < 3; r++)
                 for (int c = 0; c < 3; c++)
-                    if (tiles[r, c] == 0)  // Пустая плитка
                     {
                         emptyRow = r;
                         emptyCol = c;
                     }
 
-            // Проверяем, можно ли переместить плитку
             if ((Math.Abs(row - emptyRow) == 1 && col == emptyCol) || (Math.Abs(col - emptyCol) == 1 && row == emptyRow))
             {
-                // Меняем местами плитки
                 tiles[emptyRow, emptyCol] = tiles[row, col];
                 tiles[row, col] = 0;
 
-                // Обновляем интерфейс
                 UpdateButtons();
             }
         }
