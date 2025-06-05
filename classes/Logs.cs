@@ -19,6 +19,21 @@ namespace _8Puzzle.classes
         public string Alghorithm { get; set; }
 
 
+        public static int[] Flatten(int[,] state)
+        {
+            int rows = state.GetLength(0);
+            int cols = state.GetLength(1);
+            int[] flat = new int[rows * cols];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    flat[i * cols + j] = state[i, j];
+                }
+            }
+            return flat;
+        }
+
 
         public static void LogSolution(Logs log, string filePath)
         {

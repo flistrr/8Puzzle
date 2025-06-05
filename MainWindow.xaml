@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_8Puzzle"
         mc:Ignorable="d"
-        Title="MainWindow" Height="750" Width="500"
+        Title="8Puzzle" Height="750" Width="500"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Grid Margin="0,0,0,-25">

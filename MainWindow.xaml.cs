@@ -24,7 +24,7 @@ namespace _8Puzzle
     public partial class MainWindow : Window
     {
         public Button[,] buttons = new Button[3, 3];
-        public int[,] tiles = new int[3,3];
+        public int[,] tiles = new int[3, 3];
         public State state = new State();
         public int[,] goalState = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
 
@@ -32,9 +32,9 @@ namespace _8Puzzle
         {
             this.InitializeComponent();
             InitButtons();
-            tiles = new int[,] { { 1, 2, 3}, { 4, 5, 6 }, {7, 8, 0 } };
+            tiles = new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
             state = new State(tiles);
-            UpdateButtons(); 
+            UpdateButtons();
         }
 
         private void UpdateButtons()
@@ -62,9 +62,9 @@ namespace _8Puzzle
                         Background = Brushes.White,
                         Foreground = Brushes.Black,
                         FontWeight = FontWeights.Bold,
-                        
+
                     };
-                    button.Click += Tile_Click; 
+                    button.Click += Tile_Click;
 
                     Grid.SetRow(button, row);
                     Grid.SetColumn(button, col);
@@ -80,16 +80,24 @@ namespace _8Puzzle
             int row = Grid.GetRow(button);
             int col = Grid.GetColumn(button);
 
-
             int emptyRow = -1, emptyCol = -1;
+
             for (int r = 0; r < 3; r++)
+            {
                 for (int c = 0; c < 3; c++)
+                {
+                    if (tiles[r, c] == 0)
                     {
                         emptyRow = r;
                         emptyCol = c;
+                        break;
                     }
+                }
+                if (emptyRow != -1) break;
+            }
 
-            if ((Math.Abs(row - emptyRow) == 1 && col == emptyCol) || (Math.Abs(col - emptyCol) == 1 && row == emptyRow))
+            if ((Math.Abs(row - emptyRow) == 1 && col == emptyCol) ||
+                (Math.Abs(col - emptyCol) == 1 && row == emptyRow))
             {
                 tiles[emptyRow, emptyCol] = tiles[row, col];
                 tiles[row, col] = 0;
@@ -98,43 +106,9 @@ namespace _8Puzzle
             }
         }
 
-        private int[,] GenerateShuffledState()
-        {
-            var list = Enumerable.Range(0, 9).ToList();
-            var rnd = new Random();
-
-            int[,] newState = new int[3, 3];
-
-            do
-            {
-                list = list.OrderBy(x => rnd.Next()).ToList();
-            }
-            while (!IsSolvable(list));
-
-            for (int i = 0; i < 9; i++)
-                newState[i / 3, i % 3] = list[i];
-
-            return newState;
-        }
-
-        private bool IsSolvable(List<int> tiles)
-        {
-            int inv = 0;
-            for (int i = 0; i < 9; i++)
-            {
-                if (tiles[i] == 0) continue;
-                for (int j = i + 1; j < 9; j++)
-                {
-                    if (tiles[j] == 0) continue;
-                    if (tiles[i] > tiles[j]) inv++;
-                }
-            }
-            return inv % 2 == 0;
-        }
-
         private void Shuffle_Click(object sender, RoutedEventArgs e)
         {
-            tiles = GenerateShuffledState();
+            tiles = new State().GetBoard();
             UpdateButtons();
         }
 
@@ -144,7 +118,7 @@ namespace _8Puzzle
             MessageBox.Show("Solver started");
             string chosenMethod = (Choice.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "A*";
 
-            
+
 
             var initialState = new State(tiles);
             var copy = new State(initialState.GetBoard());
@@ -185,7 +159,7 @@ namespace _8Puzzle
 
             Logs.LogSolution(log, "logs.json");
 
-            
+
         }
 
         private void ShowStats(Statistics primary, Statistics secondary, char order)
@@ -193,12 +167,12 @@ namespace _8Puzzle
             switch (order)
             {
                 case '1':
-                    MessageBox.Show($"A*: {primary.AStarElapsedTime} | {primary.AStarSolutionDepth} | {primary.AStarVisitedStates}" 
+                    MessageBox.Show($"A*: {primary.AStarElapsedTime} | {primary.AStarSolutionDepth} | {primary.AStarVisitedStates}"
                         + $"\nRBFS {secondary.RBFSElapsedTime} | {secondary.RBFSSolutionDepth} | {secondary.RBFSVisitedStates}");
                     break;
 
                 case '2':
-                    MessageBox.Show($"RBFS {primary.RBFSElapsedTime} | {primary.RBFSSolutionDepth} | {primary.RBFSVisitedStates}" 
+                    MessageBox.Show($"RBFS {primary.RBFSElapsedTime} | {primary.RBFSSolutionDepth} | {primary.RBFSVisitedStates}"
                         + $"\nA*: {secondary.AStarElapsedTime} | {secondary.AStarSolutionDepth} | {secondary.AStarVisitedStates}");
                     break;
                 default:
@@ -225,8 +199,8 @@ namespace _8Puzzle
         {
             FileInfo logInfo = new FileInfo("logs.json");
 
-            if (File.Exists(logInfo.FullName) && logInfo.Length > 0) 
-            { 
+            if (File.Exists(logInfo.FullName) && logInfo.Length > 0)
+            {
                 File.Delete(logInfo.FullName);
                 MessageBox.Show("logs.json was successfuly deleted");
             }

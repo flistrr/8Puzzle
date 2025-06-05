@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace _8Puzzle
 {
@@ -24,6 +25,7 @@ namespace _8Puzzle
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
                     this.tiles[i, j] = tiles[i, j];
+
         }
 
         public void UpdateBoard(State state)
@@ -65,7 +67,7 @@ namespace _8Puzzle
             return board;
         }
 
-        private static bool IsSolvable(int[] puzzle)
+        public static bool IsSolvable(int[] puzzle)
         {
             int inversions = 0;
 
@@ -152,12 +154,5 @@ namespace _8Puzzle
             foreach (int t in tiles) hash = hash * 31 + t;
             return hash;
         }
-
-
-
     }
-
-
-
-
 }
